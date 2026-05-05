@@ -44,8 +44,18 @@ export default function Sidebar({ url, auth }) {
                 title="Kategori"
                 icon={IconCategory}
             />
-            <NavLink url="#" title="Penerbit" icon={IconBuildingCommunity} />
-            <NavLink url="#" title="Buku" icon={IconBooks} />
+            <NavLink
+                url={route('admin.publishers.index')}
+                active={url.startsWith('/admin/publishers')}
+                title="Penerbit"
+                icon={IconBuildingCommunity}
+            />
+            <NavLink
+                url={route('admin.books.index')}
+                active={url.startsWith('/admin/books')}
+                title="Buku"
+                icon={IconBooks}
+            />
             <NavLink url="#" title="Pengguna" icon={IconUsersGroup} />
             <NavLink url="#" title="Pengaturan Denda" icon={IconSettingsExclamation} />
 
