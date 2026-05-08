@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-
+use App\Enums\BookLanguage;
 class BookRequest extends FormRequest
 {
     /**
@@ -68,13 +68,13 @@ class BookRequest extends FormRequest
                 'min:0',
             ],
             'category_id' => [
-                'required',
-                'exist:categories,id',
-            ],
+    'required',
+    'exists:categories,id', //
+],
             'publisher_id' => [
-                'required',
-                'exist:publishers,id',
-            ],
+    'required',
+    'exists:publishers,id', //
+],
         ];
     }
     public function attributes(): array

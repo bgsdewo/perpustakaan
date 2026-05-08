@@ -13,6 +13,9 @@ use App\Models\Publisher;
 use App\Models\Stock;
 use App\Models\Loan;
 use Illuminate\Database\Eloquent\Builder;
+use App\Observers\BookObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+#[ObservedBy(BookObserver::class)]
 class Book extends Model
 {
     protected $fillable = [
