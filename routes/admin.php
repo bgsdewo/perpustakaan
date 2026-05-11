@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\FineSettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
@@ -41,5 +42,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
             Route::put('users/edit/{user}',  'update')->name( 'admin.users.update');
             Route::delete('users/destroy/{user}',  'destroy')->name( 'admin.users.destroy');
             Route::get('users/create',  'create')->name( 'admin.users.create');
+            });
+
+            Route::controller(FineSettingController::class)->group(function () {
+                Route::get('fine-settings/create',  'create')->name('admin.fine-settings.create');
+                Route::put('fine-settings/create', 'store')->name('admin.fine-settings.store');
             });
 });
