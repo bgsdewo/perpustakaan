@@ -23,7 +23,7 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'avatar' => $this->avatar? Storage::url($this->avatar) : null,
             'gender' => $this->gender,
-            'data_of_birth' =>$this->date_of_birth->format('d M Y'),
+            'date_of_birth' => $this->date_of_birth ? $this->date_of_birth->format('d M Y') : null,
             'address' => $this->address,
             'created_at' => $this->created_at->format('d M Y'),
         ];
