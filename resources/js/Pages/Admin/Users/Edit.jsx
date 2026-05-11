@@ -11,34 +11,27 @@ import { IconArrowLeft, IconUsersGroup } from '@tabler/icons-react';
 import { useRef } from 'react';
 import { toast } from 'sonner';
 
-export default function Create(props) {
+export default function Edit(props) {
     const fileInputAvatar = useRef(null);
-
     const { data, setData, reset, post, processing, errors } = useForm({
-        name: '',
-        email: '',
+        name: props.user.name ?? '',
+        email: props.user.email ?? '',
         password: '',
         password_confirmation: '',
-        phone: '',
+        phone: props.user.phone ?? '',
         avatar: null,
-        gender: null,
-        date_of_birth: '',
-        address: '',
+        gender: props.user.gender ?? null,
+        date_of_birth: props.user.date_of_birth ?? '',
+        address: props.user.address ?? '',
         _method: props.page_settings.method,
     });
-
-    const onHandleChange = (e) => {
-        setData(e.target.name, e.target.value);
-    };
-
+    const onHandleChange = (e) => setData(e.target.name, e.target.value);
     const onHandleSubmit = (e) => {
         e.preventDefault();
-
         post(props.page_settings.action, {
             forceFormData: true,
             preserveScroll: true,
             preserveState: true,
-
             onSuccess: (page) => {
                 const flash = page.props.flash_message;
 
@@ -48,13 +41,9 @@ export default function Create(props) {
             },
         });
     };
-
     const onHandleReset = () => {
         reset();
-
-        if (fileInputAvatar.current) {
-            fileInputAvatar.current.value = null;
-        }
+        fileInputAvatar.current.value = null;
     };
 
     return (
@@ -65,7 +54,6 @@ export default function Create(props) {
                     subtitle={props.page_settings.subtitle}
                     icon={IconUsersGroup}
                 />
-
                 <Button variant="orange" size="lg" asChild>
                     <Link href={route('admin.users.index')}>
                         <IconArrowLeft className="size-4" />
@@ -73,14 +61,11 @@ export default function Create(props) {
                     </Link>
                 </Button>
             </div>
-
             <Card>
                 <CardContent className="p-6">
                     <form className="space-y-6" onSubmit={onHandleSubmit}>
-                        {/* Nama */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="name">Nama</Label>
-
                             <Input
                                 name="name"
                                 id="name"
@@ -89,14 +74,10 @@ export default function Create(props) {
                                 value={data.name}
                                 onChange={onHandleChange}
                             />
-
                             {errors.name && <InputError message={errors.name} />}
                         </div>
-
-                        {/* Email */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="email">Email</Label>
-
                             <Input
                                 name="email"
                                 id="email"
@@ -105,14 +86,10 @@ export default function Create(props) {
                                 value={data.email}
                                 onChange={onHandleChange}
                             />
-
                             {errors.email && <InputError message={errors.email} />}
                         </div>
-
-                        {/* Password */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="password">Password</Label>
-
                             <Input
                                 name="password"
                                 id="password"
@@ -121,14 +98,10 @@ export default function Create(props) {
                                 value={data.password}
                                 onChange={onHandleChange}
                             />
-
                             {errors.password && <InputError message={errors.password} />}
                         </div>
-
-                        {/* Konfirmasi Password */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="password_confirmation">Konfirmasi Password</Label>
-
                             <Input
                                 name="password_confirmation"
                                 id="password_confirmation"
@@ -137,14 +110,11 @@ export default function Create(props) {
                                 value={data.password_confirmation}
                                 onChange={onHandleChange}
                             />
-
                             {errors.password_confirmation && <InputError message={errors.password_confirmation} />}
                         </div>
 
-                        {/* Phone */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="phone">Nomor Handphone</Label>
-
                             <Input
                                 name="phone"
                                 id="phone"
@@ -153,19 +123,14 @@ export default function Create(props) {
                                 value={data.phone}
                                 onChange={onHandleChange}
                             />
-
                             {errors.phone && <InputError message={errors.phone} />}
                         </div>
-
-                        {/* Gender */}
-                        <div className="grid w-full items-center gap-1.5">
+                        <div>
                             <Label>Jenis Kelamin</Label>
-
                             <Select value={data.gender} onValueChange={(value) => setData('gender', value)}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Pilih jenis kelamin" />
                                 </SelectTrigger>
-
                                 <SelectContent>
                                     {props.genders.map((gender, i) => (
                                         <SelectItem key={i} value={String(gender.value)}>
@@ -174,11 +139,8 @@ export default function Create(props) {
                                     ))}
                                 </SelectContent>
                             </Select>
-
                             {errors.gender && <InputError message={errors.gender} />}
                         </div>
-
-                        {/* Tanggal Lahir */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="date_of_birth">Tanggal Lahir</Label>
 
@@ -192,8 +154,6 @@ export default function Create(props) {
 
                             {errors.date_of_birth && <InputError message={errors.date_of_birth} />}
                         </div>
-
-                        {/* Address */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="address">Alamat</Label>
 
@@ -208,11 +168,8 @@ export default function Create(props) {
 
                             {errors.address && <InputError message={errors.address} />}
                         </div>
-
-                        {/* Avatar */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="avatar">Avatar</Label>
-
                             <input
                                 name="avatar"
                                 id="avatar"
@@ -220,16 +177,12 @@ export default function Create(props) {
                                 onChange={(e) => setData('avatar', e.target.files[0])}
                                 ref={fileInputAvatar}
                             />
-
                             {errors.avatar && <InputError message={errors.avatar} />}
                         </div>
-
-                        {/* Button */}
                         <div className="flex justify-end gap-x-2">
                             <Button type="button" variant="ghost" size="lg" onClick={onHandleReset}>
                                 Reset
                             </Button>
-
                             <Button type="submit" variant="orange" size="lg" disabled={processing}>
                                 Save
                             </Button>
@@ -241,4 +194,4 @@ export default function Create(props) {
     );
 }
 
-Create.layout = (page) => <AppLayout children={page} title={page.props.page_settings.title} />;
+Edit.layout = (page) => <AppLayout children={page} title={page.props.page_settings.title} />;
