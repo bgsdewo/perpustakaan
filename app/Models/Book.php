@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Enums\BookLanguage;
 use App\Enums\BookStatus;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo ;
-use Illuminate\Database\Eloquent\Relations\HasOne ;
-use Illuminate\Database\Eloquent\Relations\HasMany ;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Category;
 use App\Models\Publisher;
 use App\Models\Stock;
@@ -15,6 +15,7 @@ use App\Models\Loan;
 use Illuminate\Database\Eloquent\Builder;
 use App\Observers\BookObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+
 #[ObservedBy(BookObserver::class)]
 class Book extends Model
 {
@@ -64,29 +65,59 @@ class Book extends Model
         return $this->belongsTo(Publisher::class);
     }
 
-        public function scopeFilter(Builder $query, array $filters): void
-        {
-            $query->when($filters['search'] ?? null, function($query, $search) {
-                $query->where(function($query) use ($search){
-                    $query->whereAny([
+    public function scopeFilter(Builder $query, array $filters): void
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->whereAny([
 
-                        'book_code',
-                        'title',
-                        'slug',
-                        'author',
-                        'publication_year',
-                        'isbn',
-                        'language',
-                        'status',
+                    'book_code',
+                    'title',
+                    'slug',
+                    'author',
+                    'publication_year',
+                    'isbn',
+                    'language',
+                    'status',
 
-                    ], 'REGEXP', $search);
-                });
+                ], 'REGEXP', $search);
             });
+        });
+    }
+    public function scopeSorting(Builder $query, array $sorts): void
+    {
+        $query->when($sorts['field'] ?? null && $sorts['direction'] ?? null, function ($query) use ($sorts) {
+            $query->orderBy($sorts['field'], $sorts['direction']);
+        });
+    }
+
+    public function updateStock($columnToDecrement, $columnToIncrement)
+    {
+        if ($this->stock->$columnToDecrement > 0) {
+            return $this->stock()->update([
+                $columnToDecrement => $this->stock->$columnToDecrement - 1,
+                $columnToIncrement => $this->stock->$columnToIncrement + 1,
+            ]);
         }
-        public function scopeSorting(Builder $query, array $sorts): void
-        {
-            $query->when($sorts['field'] ?? null && $sorts['direction'] ?? null, function ($query) use ($sorts) {
-                $query->orderBy($sorts['field'], $sorts['direction']);
-            });
-        }
+        return false;
+    }
+    public function stock_loan()
+    {
+        return $this->updateStock('available',  'loan');
+    }
+
+    public function stock_lost()
+    {
+        return $this->updateStock('loan',  'lost');
+    }
+
+    public function stock_damaged()
+    {
+        return $this->updateStock('loan',  'damaged');
+    }
+
+    public function stock_loan_return()
+    {
+        return $this->updateStock('loan',  'available');
+    }
 }

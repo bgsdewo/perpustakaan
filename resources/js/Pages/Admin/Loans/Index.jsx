@@ -18,10 +18,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react'; // Tambahkan router di sini
 import { IconArrowsDownUp, IconCreditCardPay, IconPencil, IconPlus, IconRefresh, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-
+import { toast } from 'sonner';
+import { flashMessage } from '@/lib/utils';
 export default function Index(props) {
     const { data: loans, meta } = props.loans;
     const [params, setParams] = useState(props.state);
@@ -213,7 +214,16 @@ export default function Index(props) {
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                         <AlertDialogAction
-                                                            onClick={() => console.log('hapus peminjaman')}
+                                                            onClick={() => {
+                                                                router.delete(route('admin.loans.destroy', [loan]), {
+                                                                    preserveScroll: true,
+                                                                    preserveState: true,
+                                                                    onSuccess: (success) => {
+                                                                        const flash = flashMessage(success);
+                                                                        if (flash) toast[flash.type](flash.message);
+                                                                    }
+                                                                });
+                                                            }}
                                                         >
                                                             Continue
                                                         </AlertDialogAction>

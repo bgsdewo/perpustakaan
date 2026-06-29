@@ -64,4 +64,16 @@ class Loan extends Model
             });
         }
 
+        public static function checkLoanBook(int $user_id, int $book_id): bool
+{
+    return self::query()
+        ->where('user_id', $user_id)
+        ->where('book_id', $book_id)
+        ->whereDoesntHave('returnBook', function ($query) use ($book_id, $user_id) {
+            $query->where('book_id', $book_id)
+                  ->where('user_id', $user_id);
+        })
+        ->exists();
+}
+
 }
