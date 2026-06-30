@@ -18,11 +18,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
+import { flashMessage } from '@/lib/utils';
 import { Link, router } from '@inertiajs/react'; // Tambahkan router di sini
-import { IconArrowsDownUp, IconCreditCardPay, IconPencil, IconPlus, IconRefresh, IconTrash } from '@tabler/icons-react';
+import {
+    IconArrowsDownUp,
+    IconCreditCardPay,
+    IconCreditCardRefund,
+    IconPencil,
+    IconPlus,
+    IconRefresh,
+    IconTrash,
+} from '@tabler/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { flashMessage } from '@/lib/utils';
 export default function Index(props) {
     const { data: loans, meta } = props.loans;
     const [params, setParams] = useState(props.state);
@@ -188,6 +196,13 @@ export default function Index(props) {
                                     <TableCell>{loan.created_at}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
+                                            {!loan.has_return_book && (
+                                                <Button variant="purple" size="sm" asChild>
+                                                    <Link href={route('admin.return-books.create', [loan])}>
+                                                        <IconCreditCardRefund className="size-4" />
+                                                    </Link>
+                                                </Button>
+                                            )}
                                             {/* EDIT */}
                                             <Button variant="blue" size="sm" asChild>
                                                 <Link href={route('admin.loans.edit', [loan])}>
@@ -221,7 +236,7 @@ export default function Index(props) {
                                                                     onSuccess: (success) => {
                                                                         const flash = flashMessage(success);
                                                                         if (flash) toast[flash.type](flash.message);
-                                                                    }
+                                                                    },
                                                                 });
                                                             }}
                                                         >
