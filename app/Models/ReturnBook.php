@@ -11,6 +11,7 @@ use App\Models\Loan;
 use App\Models\Book;
 use App\Models\Fine;
 use App\Models\ReturnBookCheck;
+use Carbon\Carbon;
 
 class ReturnBook extends Model
 {
@@ -102,5 +103,14 @@ class ReturnBook extends Model
     public function scopeMember(Builder $query, int $user_id): Builder
     {
         return $query->where('user_id', $user_id);
+    }
+    public function isOnTime(): bool
+    {
+        return Carbon::today()->lessThanOrEqualTo(Carbon::parse($this->loan->due_date));
+    }
+
+    public function getDaysLate(): int
+    {
+        return max(0, Carbon::parse($this->loan->loan_date)->diffInDays(Carbon::parse($this->return_date)));
     }
 }

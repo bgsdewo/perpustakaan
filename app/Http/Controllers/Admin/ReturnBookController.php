@@ -3,18 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\MessageType;
+use App\Enums\ReturnBookCondition;
+use App\Enums\ReturnBookStatus;
+
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Inertia\Response; // Pastikan ini ditambahkan agar return type 'Response' dikenali
-use App\Models\ReturnBook; // Sesuaikan dengan lokasi model ReturnBook Anda
-use App\Http\Resources\Admin\ReturnBookResource; // Sesuaikan dengan lokasi Resource Anda
-use App\Enums\ReturnBookCondition; // Sesuaikan dengan lokasi Model/Class And
-use App\Models\FineSetting;
-use App\Models\Loan;
-use Carbon\Carbon;
 use App\Http\Requests\Admin\ReturnBookRequest;
-use Throwable;
+use App\Http\Resources\Admin\ReturnBookResource;
+
+use App\Models\Loan;
+use App\Models\Fine;
+use App\Models\FineSetting;
+use App\Models\ReturnBook;
+use App\Models\ReturnBookCheck;
+
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Response;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ReturnBookController extends Controller
 {
@@ -78,7 +85,7 @@ class ReturnBookController extends Controller
     {
 
         try {
-
+            DB::beginTransaction();
             $return_book = $loan->returnBook()->create([
 
                 'return_book_code' => str()->lower(str()->random(10)),
@@ -97,11 +104,89 @@ class ReturnBookController extends Controller
                 ReturnBookCondition::DAMAGED->value => $return_book->book->stock_damaged(),
                 default => flashMessage('Kondisi buku tidak sesuai', 'error'),
             };
+            $isOnTime = $return_book->isOnTime();
+
+            $daysLate = $return_book->getDaysLate();
+
+            $fineData = $this->calculateFine($return_book, $return_book_check, FineSetting::first(), $daysLate);
+
+            DB::commit();
+
+            if ($isOnTime) {
+                if ($fineData) {
+                    flashMessage($fineData['message'], 'error');
+                    return to_route('admin.fiens.create', $return_book->return_book_code);
+                }
+                flashMessage('Berhail mengembalikan buku');
+                return to_route('admin.return-books.index');
+            } else {
+
+                if ($fineData) {
+
+                    flashMessage($fineData['message'], 'error');
+
+                    return to_route('admin.fines.create', $return_book->return_book_code);
+                }
+            }
             flashMessage('Berhasil mengembalikan buku');
             return to_route('admin.return-books.index');
         } catch (Throwable $e) {
+            DB::rollBack();
             flashMessage(MessageType::ERROR->message($e->getMessage()));
             return to_route('admin.loans.index');
+        }
+    }
+    private function createFine(ReturnBook $returnBook, float $lateFee, float $otherFee): Fine
+    {
+        return $returnBook->fine()->create([
+            'user_id' => $returnBook->user_id,
+            'late_fee' => $lateFee,
+            'other_fee' => $otherFee,
+            'total_fee' => $lateFee + $otherFee,
+            'fine_date' => Carbon::today(),
+        ]);
+    }
+    private function calculateFine(ReturnBook $returnBook, ReturnBookCheck $returnBookCheck, FineSetting $fineSetting, int $daysLate): ?array
+    {
+        $late_fee = $fineSetting->late_fee_per_day * $daysLate;
+        switch ($returnBookCheck->condition->value) {
+            case ReturnBookCondition::DAMAGED->value:
+                $other_fee = ($fineSetting->damage_fee_percentage / 100) * $returnBook->book->price;
+                $returnBook->update([
+                    'status' => ReturnBookStatus::FINE->value,
+                ]);
+                $this->createFine($returnBook, $late_fee, $other_fee);
+
+                return [
+                    'message' => 'Kondisi buku rusak, harus membayar denda kerusakan',
+                ];
+            case ReturnBookCondition::LOST->value:
+                $other_fee = ($fineSetting->lost_fee_percentage / 100) * 2  * $returnBook->book->price;
+                $returnBook->update([
+                    'status' => ReturnBookStatus::FINE->value,
+                ]);
+                $this->createFine($returnBook, $late_fee, $other_fee);
+
+                return [
+                    'message' => 'Kondisi buku hilang, harus membayar denda kehilangan buku',
+                ];
+
+            default:
+                if ($daysLate > 0) {
+                    $returnBook->update([
+                        'status' => ReturnBookStatus::FINE->value,
+                    ]);
+                    $this->createFine($returnBook, $late_fee, 0);
+                    return [
+
+                        'message' => 'Terlambat mengembalikan buku dan harus membayar denda keterlambatan',
+                    ];
+                } else {
+                    $returnBook->update([
+                        'status' => ReturnBookStatus::RETURNED->value,
+                    ]);
+                    return null;
+                }
         }
     }
 }
