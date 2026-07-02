@@ -115,7 +115,7 @@ class ReturnBookController extends Controller
             if ($isOnTime) {
                 if ($fineData) {
                     flashMessage($fineData['message'], 'error');
-                    return to_route('admin.fiens.create', $return_book->return_book_code);
+                    return to_route('admin.fines.create', $return_book->return_book_code);
                 }
                 flashMessage('Berhail mengembalikan buku');
                 return to_route('admin.return-books.index');
