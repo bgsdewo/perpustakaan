@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 use App\Http\Resources\UserSingleResource;
+use App\Models\Announcement;
+
 class HandleInertiaRequests extends Middleware
 {
     /**
@@ -33,16 +35,17 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user() ? new UserSingleResource($request->user()): null,
+                'user' => $request->user() ? new UserSingleResource($request->user()) : null,
             ],
-            'ziggy' => fn () => [
+            'ziggy' => fn() => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'flash_message' =>fn() => [
+            'flash_message' => fn() => [
                 'type' => $request->session()->get('type'),
                 'message' => $request->session()->get('message'),
-            ]
+            ],
+            'announcement' => fn() => Announcement::query()->where(column: 'is_active', operator: true)->first(),
         ];
     }
 }
