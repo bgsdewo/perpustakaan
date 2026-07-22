@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\AssignPermissionController;
+use App\Http\Controllers\Admin\AssignUserController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\BookController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ReturnBookController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\RouteAccessController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
@@ -108,5 +110,19 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('assign-permissions', action: 'index')->name(name: 'admin.assign-permissions.index');
         Route::get('assign-permissions/edit/{role}', action: 'edit')->name(name: 'admin.assign-permissions.edit');
         Route::put('assign-permissions/edit/{role}', action: 'update')->name(name: 'admin.assign-permissions.update');
+    });
+    Route::controller(AssignUserController::class)->group(function () {
+        Route::get('assign-users', 'index')->name('admin.assign-users.index');
+        Route::get('assign-users/edit/{user}', 'edit')->name('admin.assign-users.edit');
+        Route::put('assign-users/edit/{user}', 'update')->name('admin.assign-users.update');
+    });
+
+    Route::controller(RouteAccessController::class)->group(function () {
+        Route::get('route-accesses', 'index')->name('admin.route-accesses.index');
+        Route::get('route-accesses/create', 'create')->name('admin.route-accesses.create');
+        Route::post('route-accesses/create', 'store')->name('admin.route-accesses.store');
+        Route::get('route-accesses/edit/{routeAccess}', 'edit')->name('admin.route-accesses.edit');
+        Route::put('route-accesses/edit/{routeAccess}', 'update')->name('admin.route-accesses.update');
+        Route::delete('route-accesses/destroy/{routeAccess}', 'destroy')->name('admin.route-accesses.destroy');
     });
 });
