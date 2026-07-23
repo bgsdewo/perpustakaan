@@ -28,11 +28,11 @@ class RouteAccessRequest extends FormRequest
 
             'role' => [
                 'nullable',
-                'exists:roles,id',
+                'exists:roles,name',
             ],
             'permission' => [
                 'nullable',
-                'exists:permissions,id',
+                'exists:permissions,name',
             ],
         ];
     }

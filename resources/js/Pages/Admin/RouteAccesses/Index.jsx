@@ -18,9 +18,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { Link } from '@inertiajs/react';
+import { flashMessage } from '@/lib/utils';
+import { Link, router } from '@inertiajs/react';
 import { IconArrowsDownUp, IconPencil, IconPlus, IconRefresh, IconRoute, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function Index(props) {
     const { data: route_accesses, meta } = props.route_accesses;
@@ -164,7 +166,7 @@ export default function Index(props) {
                                         <div className="flex items-center gap-x-1">
                                             {/* EDIT */}
                                             <Button variant="blue" size="sm" asChild>
-                                                <Link href={route('admin.route_accesses.edit', [route_access])}>
+                                                <Link href={route('admin.route-accesses.edit', [route_access])}>
                                                     <IconPencil className="size-4" />
                                                 </Link>
                                             </Button>
@@ -187,7 +189,23 @@ export default function Index(props) {
 
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => console.log('hapus rute')}>
+                                                        <AlertDialogAction
+                                                            onClick={() =>
+                                                                router.delete(
+                                                                    route('admin.route-accesses.destroy', [
+                                                                        route_access,
+                                                                    ]),
+                                                                    {
+                                                                        preserveScroll: true,
+                                                                        preserveState: true,
+                                                                        onSuccess: (success) => {
+                                                                            const flash = flashMessage(success);
+                                                                            if (flash) toast[flash.type](flash.message);
+                                                                        },
+                                                                    },
+                                                                )
+                                                            }
+                                                        >
                                                             Continue
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
