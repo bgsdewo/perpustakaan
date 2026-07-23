@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\FineController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\FineSettingController;
 use App\Http\Controllers\Admin\LoanController;
+use App\Http\Controllers\Admin\LoanStatisticController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ReturnBookController;
 use App\Http\Controllers\Admin\RoleController;
@@ -17,6 +18,14 @@ use App\Http\Controllers\Admin\RouteAccessController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
+
+
+    Route::controller(LoanStatisticController::class)->group(callback: function () {
+        Route::get(uri: 'loan-statistics', action: 'index')->name('admin.loan-statistics.index');
+    });
+
+
+
     Route::controller(CategoryController::class)->group(function () {
         Route::get('categories', 'index')->name('admin.categories.index');
         Route::post('categories/create',  'store')->name('admin.categories.store');

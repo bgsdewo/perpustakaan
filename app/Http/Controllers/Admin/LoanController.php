@@ -75,6 +75,7 @@ class LoanController extends Controller
                 // PINDAHKAN USERS KE SINI, DI DALAM page_data
                 'users' => User::query()
                     ->select(['id', 'name'])
+                    ->whereHas('roles', fn($query) => $query->where('name', 'member'))
                     ->get()
                     ->map(fn($item) => [
                         'value' => $item->name,
@@ -148,6 +149,7 @@ class LoanController extends Controller
                 // PINDAHKAN USERS KE SINI, DI DALAM page_data
                 'users' => User::query()
                     ->select(['id', 'name'])
+                    ->whereHas('roles', fn($query) => $query->where('name', 'member'))
                     ->get()
                     ->map(fn($item) => [
                         'value' => $item->name,
