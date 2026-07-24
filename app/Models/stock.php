@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\Book;
 
 class stock extends Model
@@ -24,6 +25,23 @@ class stock extends Model
     }
 
 
+    public function scopeFilter(Builder $query, array $filters): void
+    {
+        $query->when($this->filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->whereHas('book', fn($query) => $query->where('title', 'REGEXP', $search));
+            });
+        });
+    }
 
-
+    public function scopeSorting(Builder $query, array $sorts): void
+    {
+        $query->when($this->sorts['field'] ?? null && $this->sorts['direction'] ?? null, function ($query) use ($sorts) {
+            match ($sorts['field']) {
+                'book_id' => $query->join('books', 'stocks.book_id', '=', 'books.id')
+                    ->orderBy('books.title', $sorts['direction']),
+                default => $query->orderBy($sorts['field'], $sorts['direction']),
+            };
+        });
+    }
 }
