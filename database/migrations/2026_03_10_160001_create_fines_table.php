@@ -16,9 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('return_book_id')->constrained('return_books')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->decimal('late_fee',8,2)->default(0);
-            $table->decimal('other_fee',8, 2)->default(0);
-            $table->decimal('total_fee',8, 2)->computed();
+            $table->decimal('late_fee', 8, 2)->default(0);
+            $table->decimal('other_fee', 8, 2)->default(0);
+            $table->decimal('total_fee', 8, 2)->computed();
             $table->date('fine_date');
             $table->string('payment_status')->default(FinePaymentStatus::PENDING->value);
             $table->timestamps();

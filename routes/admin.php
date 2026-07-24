@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\FineController;
+use App\Http\Controllers\Admin\FineReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\FineSettingController;
 use App\Http\Controllers\Admin\LoanController;
@@ -24,7 +25,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get(uri: 'loan-statistics', action: 'index')->name('admin.loan-statistics.index');
     });
 
-
+    Route::controller(FineReportController::class)->group(function () {
+        Route::get(uri: 'fine-reports', action: 'index')->name('admin.fine-reports.index');
+    });
 
     Route::controller(CategoryController::class)->group(function () {
         Route::get('categories', 'index')->name('admin.categories.index');
