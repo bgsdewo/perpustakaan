@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookFrontController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -11,9 +12,13 @@ Route::redirect('/', 'login');
 
 Route::get('testing', fn() => inertia('Testing'));
 
-Route::controller(DashboardController::class)->middleware(['auth','verified'])->group(function () {
+Route::controller(DashboardController::class)->middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', 'index')->name('dashboard');
+});
 
+Route::controller(BookFrontController::class)->middleware(['auth', 'verified', 'role:member'])->group(function () {
+    Route::get(uri: 'books', action: 'index')->name(name: 'front.books.index');
+    Route::get(uri: 'books/{book:slug}', action: 'show')->name(name: 'front.books.show');
 });
 
 Route::middleware('auth')->group(function () {
@@ -22,5 +27,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
-require __DIR__.'/admin.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/admin.php';
