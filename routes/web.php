@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookFrontController;
+use App\Http\Controllers\CategoryFrontController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,10 @@ Route::controller(BookFrontController::class)->middleware(['auth', 'verified', '
     Route::get(uri: 'books/{book:slug}', action: 'show')->name(name: 'front.books.show');
 });
 
+Route::controller(CategoryFrontController::class)->middleware(['auth', 'verified', 'role:member'])->group(function () {
+    Route::get('categories', 'index')->name('front.categories.index');
+    Route::get('categories/{category:slug}', 'show')->name('front.categories.show');
+});
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
