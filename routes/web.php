@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FineFrontController;
 use App\Http\Controllers\LoanFrontController;
 use App\Http\Controllers\ReturnBookFrontController;
 
@@ -40,6 +41,11 @@ Route::controller(ReturnBookFrontController::class)->middleware(['auth', 'verifi
     Route::get('return-books/{returnBook:return_book_code}/detail', 'show')->name('front.return-books.show');
     Route::post('return-books/{book:slug}/create/{loan:loan_code}', 'store')->name('front.return-books.store');
 });
+
+Route::get('fines', FineFrontController::class)
+    ->middleware(['auth', 'verified', 'role:member'])
+    ->name('front.fines.index');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
