@@ -2,8 +2,10 @@ import HeaderTitle from '@/Components/HeaderTitle';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
 import AppLayout from '@/Layouts/AppLayout';
-import { Link } from '@inertiajs/react';
+import { flashMessage } from '@/lib/utils';
+import { Link, router } from '@inertiajs/react';
 import { IconCircleCheck, IconCreditCardPay } from '@tabler/icons-react';
+import { toast } from 'sonner';
 
 export default function Show(props) {
     return (
@@ -58,7 +60,26 @@ export default function Show(props) {
                                 <Link href={route('front.books.show', [props.loan.book.slug])}>Lihat Buku</Link>
                             </Button>
                             {!props.loan.return_book && (
-                                <Button variant="orange" onClick={() => console.log('kembalikan bukunya')}>
+                                <Button
+                                    variant="orange"
+                                    onClick={() =>
+                                        router.post(
+                                            route('front.return-books.store', [
+                                                props.loan.book.slug,
+                                                props.loan.loan_code,
+                                            ]),
+                                            {},
+                                            {
+                                                preserveScroll: true,
+                                                preserveState: true,
+                                                onSuccess: (success) => {
+                                                    const flash = flashMessage(success);
+                                                    if (flash) toast[flash.type](flash.message);
+                                                },
+                                            },
+                                        )
+                                    }
+                                >
                                     Kembalikan
                                 </Button>
                             )}
