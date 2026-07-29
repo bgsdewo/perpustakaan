@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FineFrontController;
 use App\Http\Controllers\LoanFrontController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReturnBookFrontController;
 
 Route::redirect('/', 'login');
@@ -45,6 +46,12 @@ Route::controller(ReturnBookFrontController::class)->middleware(['auth', 'verifi
 Route::get('fines', FineFrontController::class)
     ->middleware(['auth', 'verified', 'role:member'])
     ->name('front.fines.index');
+
+Route::controller(PaymentController::class)->group(function () {
+    Route::post('payments', 'create')->name('payments.create');
+    Route::post('payments/callback', 'callback')->name('payments.callback');
+    Route::get('payments/success', 'success')->name('payments.success');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

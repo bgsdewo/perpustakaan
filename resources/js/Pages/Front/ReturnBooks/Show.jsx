@@ -6,11 +6,40 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import AppLayout from '@/Layouts/AppLayout';
 import { FINEPAYMENTSTATUS, formatToRupiah } from '@/lib/utils';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { IconCircleCheck, IconCreditCardRefund } from '@tabler/icons-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 export default function Show(props) {
     const { SUCCESS } = FINEPAYMENTSTATUS;
+
+    const handlePayment = async () => {
+        try {
+            const response = await axios.post(route('payments.create'), {
+                order_id: props.return_book.return_book_code,
+                gross_amount: props.return_book.fine.total_fee,
+                first_name: props.return_book.user.name,
+                last_name: '',
+                email: props.return_book.user.email,
+            });
+
+            const snapToken = response.data.snapToken;
+
+            window.snap.pay(snapToken, {
+                onSuccess: () => {
+                    toast.success('Pembayaran sukses');
+
+                    router.visit(route('payments.success'));
+                },
+                onPending: (result) => toast['warning']('Pembayaran pending'),
+                onError: (result) => toast['error']('Kesalahan Pembayaran'),
+                onClose: (result) => toast['info']('Pembayaran ditutup'),
+            });
+        } catch (error) {
+            toast['error'](`Kesalahan pembayaran ${error}`);
+        }
+    };
     return (
         <div className="flex w-full flex-col space-y-4 pb-32">
             <div className="flex flex-col items-start justify-between gap-y-4 lg:flex-row lg:items-center">
@@ -164,7 +193,7 @@ export default function Show(props) {
                                         </TableCell>
                                         {props.return_book.fine.payment_status !== SUCCESS && (
                                             <TableCell>
-                                                <Button variant="outline" onClick={(e) => console.log('bayar')}>
+                                                <Button variant="outline" onClick={handlePayment}>
                                                     Bayar
                                                 </Button>
                                             </TableCell>

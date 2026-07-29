@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'midtrans' => [
+        'is_production' => env(key: 'MIDTRANS_IS_PRODUCTION'),
+        'client_key' => env(key: 'MIDTRANS_CLIENT_KEY'),
+        'server_key' => env(key: 'MIDTRANS_SERVER_KEY'),
+    ],
 ];
