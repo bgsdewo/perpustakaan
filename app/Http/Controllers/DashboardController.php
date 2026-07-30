@@ -9,6 +9,7 @@ use App\Models\Fine;
 use App\Models\Loan;
 use App\Models\ReturnBook;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
@@ -82,6 +83,7 @@ class DashboardController extends Controller
             ],
 
             'page_data' => [
+                'transactionChart' => $this->chart(),
                 'loans' => TransactionLoanResource::collection($loans),
 
                 'return_books' => TransactionReturnBookResource::collection($returnBooks),
@@ -101,5 +103,59 @@ class DashboardController extends Controller
                 'total_fines' => $totalFines,
             ],
         ]);
+    }
+    public function chart(): array
+    {
+        $end_date = Carbon::now();
+
+        $start_date = $end_date->copy()->subMonth()->startOfMonth();
+
+        $loans = Loan::query()
+            ->selectRaw('DATE(loan_date) as date, COUNT(*) as loan')
+            ->when(auth()->user()->hasAnyRole(['admin', 'operator']), function ($query) {
+                return $query;
+            }, function ($query) {
+                return $query->where('user_id', auth()->user()->id);
+            }) // <-- Pastikan titik koma (;) ada di sini jika ini akhir chain, atau hapus jika langsung disambung
+            ->whereBetween('loan_date', [$start_date, $end_date])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('loan', 'date');
+
+        $return_books = ReturnBook::query()
+
+            ->selectRaw('DATE(return_date) as date, COUNT(*) as returns')
+
+            ->when(auth()->user()->hasAnyRole(['admin', 'operator']), function ($query) {
+
+                return $query;
+            }, function ($query) {
+
+                return $query->where('user_id', auth()->user()->id);
+            })
+            ->whereBetween('return_date', [$start_date, $end_date])
+
+            ->groupBy('date')
+
+            ->orderBy('date')
+
+            ->pluck('returns', 'date');
+
+        $charts = [];
+
+        $period = Carbon::parse($start_date)->daysUntil($end_date);
+
+        foreach ($period as $date) {
+
+            $date_string = $date->toDateString();
+
+            $charts[] = [
+                'date' => $date_string,
+                'loan' => $loans->get($date_string, 0),
+                'return_book' => $return_books->get($date_string, 0),
+            ];
+        }
+
+        return $charts;
     }
 }
