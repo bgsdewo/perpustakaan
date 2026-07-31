@@ -26,6 +26,7 @@ use Throwable;
 class ReturnBookController extends Controller
 {
 
+
     public function index(): Response
     {
         $return_books = ReturnBook::query()
