@@ -15,6 +15,7 @@ use Inertia\Response;
 
 class ReturnBookFrontController extends Controller
 {
+
     public function index(): Response
     {
         $return_books = ReturnBook::query()

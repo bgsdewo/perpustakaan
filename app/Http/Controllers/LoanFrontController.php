@@ -13,6 +13,7 @@ use Inertia\Response;
 
 class LoanFrontController extends Controller
 {
+
     public function index(): Response
     {
         $loans = Loan::query()
