@@ -9,12 +9,11 @@ const chartConfig = {
     },
     loan: {
         label: 'Peminjaman',
-
-        color: 'hsl(var(--chart-1))',
+        color: '#3b82f6', // Biru
     },
     return_book: {
         label: 'Pengembalian',
-        color: 'hsl(var(--chart-2))',
+        color: '#10b981', // Hijau
     },
 };
 
@@ -42,8 +41,8 @@ export default function ChartCustom({ chartData }) {
                             <button
                                 key={key}
                                 data-active={activeChart === key}
-                                className="data-[active=true]:bg-muted/50 sm:py-6' relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:px-8"
                                 onClick={() => setActiveChart(key)}
+                                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left transition-colors even:border-l data-[active=true]:bg-zinc-100 dark:data-[active=true]:bg-zinc-800/60 sm:border-t-0 sm:px-8 sm:py-6"
                             >
                                 <span className="text-xs text-muted-foreground">{chartConfig[key].label}</span>
                                 <span className="text-lg font-bold leading-none sm:text-3xl">
@@ -95,7 +94,7 @@ export default function ChartCustom({ chartData }) {
                                 />
                             }
                         />
-                        <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
+                        <Bar dataKey={activeChart} fill={chartConfig[activeChart].color} radius={[4, 4, 0, 0]} />
                     </BarChart>
                 </ChartContainer>
             </CardContent>
