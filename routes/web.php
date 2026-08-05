@@ -17,34 +17,37 @@ Route::redirect('/', 'login');
 
 
 
-Route::controller(DashboardController::class)->middleware(['auth', 'verified', 'dynamic.role_permission'])->group(function () {
+// Ubah dari ['auth', 'verified', 'dynamic.role_permission']
+// Menjadi seperti ini:
+
+Route::controller(DashboardController::class)->middleware(['auth', 'dynamic.role_permission'])->group(function () {
     Route::get('dashboard', 'index')->name('dashboard');
 });
 
-Route::controller(BookFrontController::class)->middleware(['auth', 'verified', 'dynamic.role_permission'])->group(function () {
+Route::controller(BookFrontController::class)->middleware(['auth', 'dynamic.role_permission'])->group(function () {
     Route::get(uri: 'books', action: 'index')->name(name: 'front.books.index');
     Route::get(uri: 'books/{book:slug}', action: 'show')->name(name: 'front.books.show');
 });
 
-Route::controller(CategoryFrontController::class)->middleware(['auth', 'verified', 'dynamic.role_permission'])->group(function () {
+Route::controller(CategoryFrontController::class)->middleware(['auth', 'dynamic.role_permission'])->group(function () {
     Route::get('categories', 'index')->name('front.categories.index');
     Route::get('categories/{category:slug}', 'show')->name('front.categories.show');
 });
 
-Route::controller(LoanFrontController::class)->middleware(['auth', 'verified', 'dynamic.role_permission'])->group(function () {
+Route::controller(LoanFrontController::class)->middleware(['auth', 'dynamic.role_permission'])->group(function () {
     Route::get('loans', 'index')->name('front.loans.index');
     Route::get('loans/{loan:loan_code}/detail', 'show')->name('front.loans.show');
     Route::post('loans/{book:slug}/create', 'store')->name('front.loans.store');
 });
 
-Route::controller(ReturnBookFrontController::class)->middleware(['auth', 'verified', 'dynamic.role_permission'])->group(function () {
+Route::controller(ReturnBookFrontController::class)->middleware(['auth', 'dynamic.role_permission'])->group(function () {
     Route::get('return-books', 'index')->name('front.return-books.index');
     Route::get('return-books/{returnBook:return_book_code}/detail', 'show')->name('front.return-books.show');
     Route::post('return-books/{book:slug}/create/{loan:loan_code}', 'store')->name('front.return-books.store');
 });
 
 Route::get('fines', FineFrontController::class)
-    ->middleware(['auth', 'verified', 'dynamic.role_permission'])
+    ->middleware(['auth', 'dynamic.role_permission'])
     ->name('front.fines.index');
 
 Route::controller(PaymentController::class)->group(function () {

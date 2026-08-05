@@ -73,6 +73,7 @@ class DashboardController extends Controller
         $totalFines = $user->hasRole('member')
             ? Fine::query()
             ->where('user_id', Auth::id())
+            ->where('payment_status', '!=', 'Sukses') //
             ->sum('total_fee')
             : 0;
 
