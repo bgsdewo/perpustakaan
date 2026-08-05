@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin;
 
+use Carbon\Carbon; // <--- Pastikan import Carbon ada di sini
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -21,9 +22,9 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'email' => $this->email,
             'phone' => $this->phone,
-            'avatar' => $this->avatar? Storage::url($this->avatar) : null,
+            'avatar' => $this->avatar ? Storage::url($this->avatar) : null,
             'gender' => $this->gender,
-            'date_of_birth' => $this->date_of_birth ? $this->date_of_birth->format('d M Y') : null,
+           'date_of_birth' => $this->date_of_birth ? Carbon::parse($this->date_of_birth)->format('Y-m-d') : null, // <--- Ubah ke format Y-m-d
             'address' => $this->address,
             'created_at' => $this->created_at->format('d M Y'),
         ];

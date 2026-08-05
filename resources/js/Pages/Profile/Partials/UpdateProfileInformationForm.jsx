@@ -6,14 +6,21 @@ import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
+
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
-        name: user.name,
-        email: user.email,
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        gender: user.gender || '',
+        date_of_birth: user.date_of_birth || '',
+        address: user.address || '',
     });
+
     const onHandleChange = (e) => setData(e.target.name, e.target.value);
+
     const onHandleSubmit = (e) => {
         e.preventDefault();
 
@@ -24,22 +31,21 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
         <Card className={className}>
             <CardHeader>
                 <CardTitle>Profile Information</CardTitle>
-
-                <CardDescription>Update your account's profile information and email address.</CardDescription>
+                <CardDescription>Update your account's profile information and personal details.</CardDescription>
             </CardHeader>
 
             <CardContent>
                 <form onSubmit={onHandleSubmit} className="mt-6 space-y-6">
+                    {/* Nama */}
                     <div>
                         <Label htmlFor="name">Nama</Label>
-
                         <Input id="name" name="name" value={data.name} onChange={onHandleChange} autoComplete="name" />
                         {errors.name && <InputError className="mt-2" message={errors.name} />}
                     </div>
 
+                    {/* Email */}
                     <div>
                         <Label htmlFor="email">Email</Label>
-
                         <Input
                             id="email"
                             name="email"
@@ -48,14 +54,71 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             onChange={onHandleChange}
                             autoComplete="username"
                         />
-
                         {errors.email && <InputError className="mt-2" message={errors.email} />}
+                    </div>
+
+                    {/* Nomor Handphone */}
+                    <div>
+                        <Label htmlFor="phone">Nomor Handphone</Label>
+                        <Input
+                            id="phone"
+                            name="phone"
+                            type="text"
+                            value={data.phone}
+                            onChange={onHandleChange}
+                            placeholder="Masukan nomor handphone..."
+                        />
+                        {errors.phone && <InputError className="mt-2" message={errors.phone} />}
+                    </div>
+
+                    {/* Jenis Kelamin */}
+                    <div>
+                        <Label htmlFor="gender">Jenis Kelamin</Label>
+                        <select
+                            id="gender"
+                            name="gender"
+                            value={data.gender}
+                            onChange={onHandleChange}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            <option value="">Pilih Jenis Kelamin</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                        {errors.gender && <InputError className="mt-2" message={errors.gender} />}
+                    </div>
+
+                    {/* Tanggal Lahir */}
+                    <div>
+                        <Label htmlFor="date_of_birth">Tanggal Lahir</Label>
+                        <Input
+                            id="date_of_birth"
+                            name="date_of_birth"
+                            type="date"
+                            value={data.date_of_birth}
+                            onChange={onHandleChange}
+                        />
+                        {errors.date_of_birth && <InputError className="mt-2" message={errors.date_of_birth} />}
+                    </div>
+
+                    {/* Alamat */}
+                    <div>
+                        <Label htmlFor="address">Alamat</Label>
+                        <Input
+                            id="address"
+                            name="address"
+                            type="text"
+                            value={data.address}
+                            onChange={onHandleChange}
+                            placeholder="Masukan alamat..."
+                        />
+                        {errors.address && <InputError className="mt-2" message={errors.address} />}
                     </div>
 
                     {mustVerifyEmail && user.email_verified_at === null && (
                         <div>
                             <p className="mt-2 text-sm text-foreground">
-                                Your email address is unverified.
+                                Your email address is unverified.{' '}
                                 <Link
                                     href={route('verification.send')}
                                     method="post"
@@ -67,7 +130,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             </p>
 
                             {status === 'verification-link-sent' && (
-                                <Alert variant="success">
+                                <Alert variant="success" className="mt-2">
                                     <AlertDescription>
                                         A new verification link has been sent to your email address.
                                     </AlertDescription>

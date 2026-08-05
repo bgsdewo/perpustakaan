@@ -3,12 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder; // <-- PENTING: Import Builder di sini
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable // implements MustVerifyEmail --> sudah dihapus/dikomentari
+class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
@@ -22,6 +23,10 @@ class User extends Authenticatable // implements MustVerifyEmail --> sudah dihap
         'username',
         'email',
         'password',
+        'phone',
+        'gender',
+        'date_of_birth',
+        'address',
     ];
 
     /**
@@ -45,5 +50,33 @@ class User extends Authenticatable // implements MustVerifyEmail --> sudah dihap
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function scopeFilter(Builder $query, array $filters): void
+    {
+        $query->when(
+            $filters['search'] ?? null,
+            function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->whereAny([
+                        'name',
+                        'username',
+                        'email',
+                        'phone',
+                        'gender',
+                    ], 'REGEXP', $search);
+                });
+            }
+        );
+    }
+
+    public function scopeSorting(Builder $query, array $sorts): void
+    {
+        $query->when(
+            $sorts['field'] ?? null && $sorts['direction'] ?? null,
+            function ($query) use ($sorts) {
+                $query->orderBy($sorts['field'], $sorts['direction']);
+            }
+        );
     }
 }

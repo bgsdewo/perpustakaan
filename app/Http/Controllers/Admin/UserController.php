@@ -101,21 +101,22 @@ class UserController extends Controller
         }
     }
 
-    public function edit(User $user): Response
-    {
-        return inertia('Admin/Users/Edit', [
-            'page_settings' => [
-                'title' => 'Edit Pengguna',
-                'subtitle' => 'Edit pengguna disini. Klik simpan setelah selesai.',
-                'method' => 'PUT',
-                'action' => route('admin.users.update', $user),
-            ],
-
-            'genders' => UserGender::options(),
-
-            'user' => $user,
-        ]);
-    }
+    public function edit(User $user)
+{
+    return inertia('Admin/Users/Edit', [
+        'page_settings' => [
+            'title' => 'Edit Pengguna',
+            'subtitle' => 'Edit pengguna disini. Klik simpan setelah selesai.',
+            'method' => 'PUT',
+            'action' => route('admin.users.update', $user->id),
+        ],
+        'user' => new UserResource($user),
+        'genders' => [
+            ['value' => 'L', 'label' => 'Laki-laki'],
+            ['value' => 'P', 'label' => 'Perempuan'],
+        ],
+    ]);
+}
 
     public function update(User $user, UserRequest $request): RedirectResponse
     {

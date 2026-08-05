@@ -20,7 +20,7 @@ export default function Edit(props) {
         password_confirmation: '',
         phone: props.user.phone ?? '',
         avatar: null,
-        gender: props.user.gender ?? null,
+        gender: props.user.gender ? String(props.user.gender) : '',
         date_of_birth: props.user.date_of_birth ?? '',
         address: props.user.address ?? '',
         _method: props.page_settings.method,
@@ -168,7 +168,7 @@ export default function Edit(props) {
 
                             {errors.address && <InputError message={errors.address} />}
                         </div>
-                        <div className="grid w-full items-center gap-1.5">
+                        {/* <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="avatar">Avatar</Label>
                             <input
                                 name="avatar"
@@ -178,7 +178,7 @@ export default function Edit(props) {
                                 ref={fileInputAvatar}
                             />
                             {errors.avatar && <InputError message={errors.avatar} />}
-                        </div>
+                        </div> */}
                         <div className="flex justify-end gap-x-2">
                             <Button type="button" variant="ghost" size="lg" onClick={onHandleReset}>
                                 Reset
