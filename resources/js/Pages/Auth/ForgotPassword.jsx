@@ -5,7 +5,8 @@ import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
+
 export default function ForgotPassword({ status }) {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
@@ -18,64 +19,81 @@ export default function ForgotPassword({ status }) {
     };
 
     return (
-        <>
-            <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
-                <div className="flex flex-col px-6 py-4">
-                    <ApplicationLogo size="size-12" />
-                    <div className="flex flex-col items-center justify-center py-12 lg:py-48">
-                        <div className="mx-auto flex w-full flex-col gap-6 lg:w-1/2">
-                            <div className="grid gap-2 text-center">
-                                {status && (
-                                    <Alert variant="success">
-                                        <AlertDescription>{status}</AlertDescription>
-                                    </Alert>
-                                )}
-                                <h1 className="text-3xl font-bold">Lupa Password</h1>
-                                <p className="text-balance text-muted-foreground">
-                                    Forgot your password? No problem. Just let us know your email address and we will
-                                    email you a password reset link that will allow you to choose a new one.
-                                </p>
-                            </div>
-                            <form onSubmit={onHandleSubmit}>
-                                <div className="grid gap-4">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            name="email"
-                                            value={data.email}
-                                            placeholder="budi@gmail.com"
-                                            autoComplete="username"
-                                            onChange={(e) => setData('email', e.target.value)}
-                                        />
+        <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-zinc-950">
+            {/* 1. Background Image Penuh dengan Overlay */}
+            <div className="absolute inset-0 z-0 flex items-center justify-center">
+                <img
+                    src="/images/download.jfif"
+                    alt="forgot password background"
+                    className="h-full w-full object-cover opacity-60 blur-[1px] dark:brightness-[0.4]"
+                />
+                {/* Lapisan gelap agar card kontras dan teks terbaca jelas */}
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+            </div>
 
-                                        {errors.email && <InputError message={errors.email} />}
-                                    </div>
-                                    <Button
-                                        type="submit"
-                                        variant="orange"
-                                        size="xl"
-                                        className="w-full py-3 text-base"
-                                        disabled={processing}
-                                    >
-                                        Email Password Link
-                                    </Button>
+            {/* 2. Container Utama & Floating Glass Card */}
+            <div className="relative z-10 w-full max-w-md px-4">
+                {/* Logo & Judul di atas Card */}
+                <div className="mb-6 text-center">
+                    <h2 className="text-xl font-semibold text-white">Perpustakaan</h2>
+                    <p className="text-xs text-white/80">Pengetahuan Tanpa Batas</p>
+                </div>
+
+                <div className="rounded-2xl border border-white/20 bg-white/90 p-8 shadow-2xl backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/90">
+                    <div className="flex flex-col gap-6">
+                        <div className="grid gap-2 text-center">
+                            {status && (
+                                <Alert variant="success">
+                                    <AlertDescription>{status}</AlertDescription>
+                                </Alert>
+                            )}
+                            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+                                Lupa Password
+                            </h1>
+                            <p className="text-sm leading-relaxed text-muted-foreground">
+                                Lupa password? Tidak masalah. Cukup beri tahu alamat email Anda dan kami akan
+                                mengirimkan tautan reset password melalui email.
+                            </p>
+                        </div>
+
+                        <form onSubmit={onHandleSubmit}>
+                            <div className="grid gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        value={data.email}
+                                        placeholder="budi@gmail.com"
+                                        autoComplete="username"
+                                        onChange={(e) => setData('email', e.target.value)}
+                                    />
+                                    {errors.email && <InputError message={errors.email} />}
                                 </div>
-                            </form>
+
+                                <Button
+                                    type="submit"
+                                    variant="orange"
+                                    size="lg"
+                                    className="w-full py-3 text-base shadow-lg transition-all hover:opacity-90"
+                                    disabled={processing}
+                                >
+                                    Kirim Tautan Reset Password
+                                </Button>
+                            </div>
+                        </form>
+
+                        <div className="text-center text-sm">
+                            Sudah ingat password?{' '}
+                            <Link href={route('login')} className="font-medium text-primary underline">
+                                Masuk
+                            </Link>
                         </div>
                     </div>
                 </div>
-                <div className="hidden bg-muted lg:block">
-                    <img
-                        src="/images/login.webp"
-                        alt="login"
-                        className="h-full w-full object-cover dark:brightness-[0.4] dark:grayscale"
-                    />
-                </div>
             </div>
-            {/*  */}
-        </>
+        </div>
     );
 }
 
