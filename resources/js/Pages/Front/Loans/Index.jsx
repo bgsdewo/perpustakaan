@@ -52,7 +52,7 @@ export default function Index(props) {
                             <SelectTrigger className="w-full sm:w-24">
                                 <SelectValue placeholder="Load" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                 {[10, 25, 50, 75, 100].map((number, index) => (
                                     <SelectItem key={index} value={number.toString()}>
                                         {number}

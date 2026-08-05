@@ -96,7 +96,7 @@ export default function Create(props) {
                                 <SelectTrigger>
                                     <SelectValue placeholder="Pilih tahun" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {props.page_data.publicationYears.map((year, i) => (
                                         <SelectItem key={i} value={String(year)}>
                                             {year}
@@ -121,7 +121,7 @@ export default function Create(props) {
                                 <SelectTrigger>
                                     <SelectValue placeholder="Pilih bahasa" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {props.page_data.languages.map((item, i) => (
                                         <SelectItem key={i} value={item.value}>
                                             {item.label}
@@ -176,7 +176,7 @@ export default function Create(props) {
                                 <SelectTrigger>
                                     <SelectValue placeholder="Pilih kategori" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {props.page_data.categories.map((item, i) => (
                                         <SelectItem key={i} value={String(item.value)}>
                                             {item.label}
@@ -194,7 +194,7 @@ export default function Create(props) {
                                 <SelectTrigger>
                                     <SelectValue placeholder="Pilih penerbit" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {props.page_data.publishers.map((item, i) => (
                                         <SelectItem key={i} value={String(item.value)}>
                                             {item.label}

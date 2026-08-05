@@ -59,12 +59,13 @@ export default function Create(props) {
                                 name="name"
                                 id="name"
                                 type="text"
-                                placeholder="Masukan nama..."
+                                placeholder="Masukan namaa..."
                                 value={data.name}
                                 onChange={onHandleChange}
                             />
                             {errors.name && <InputError message={errors.name} />}
                         </div>
+                        {/*  */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="guard_name">Guard</Label>
                             <Select
@@ -77,7 +78,7 @@ export default function Create(props) {
                                     </SelectValue>
                                 </SelectTrigger>
 
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {['web', 'api'].map((guard, index) => (
                                         <SelectItem key={index} value={guard}>
                                             {guard.charAt(0).toUpperCase() + guard.slice(1)}
@@ -87,7 +88,6 @@ export default function Create(props) {
                             </Select>
                             {errors.guard_name && <InputError message={errors.guard_name} />}
                         </div>
-
                         <div className="flex justify-end gap-x-2">
                             <Button type="button" variant="ghost" size="lg" onClick={onHandleReset}>
                                 Reset

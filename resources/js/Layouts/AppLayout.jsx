@@ -17,7 +17,7 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { IconLayoutSidebar } from '@tabler/icons-react';
 import Sidebar from './Partials/Sidebar';
 import SidebarResponsive from './Partials/SidebarResponsive';
-
+import { router } from '@inertiajs/react';
 export default function AppLayout({ title, children }) {
     const auth = usePage().props.auth.user;
     const { url } = usePage();
@@ -71,12 +71,28 @@ export default function AppLayout({ title, children }) {
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+
+                            <DropdownMenuContent
+                                align="end"
+                                className="w-56 border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
+                            >
                                 <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link href="#">Logout</Link>
+
+                                {/* Menu Profile */}
+                                <DropdownMenuItem
+                                    onClick={() => router.visit(route('profile.edit'))}
+                                    className="w-full cursor-pointer"
+                                >
+                                    Profile
+                                </DropdownMenuItem>
+
+                                {/* Menu Logout */}
+                                <DropdownMenuItem
+                                    onClick={() => router.post(route('logout'))}
+                                    className="w-full cursor-pointer text-red-600 focus:text-red-600"
+                                >
+                                    Logout
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

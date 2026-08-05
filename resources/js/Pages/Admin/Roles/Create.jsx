@@ -77,7 +77,7 @@ export default function Create(props) {
                                     </SelectValue>
                                 </SelectTrigger>
 
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {['web', 'api'].map((guard, index) => (
                                         <SelectItem key={index} value={guard}>
                                             {guard.charAt(0).toUpperCase() + guard.slice(1)}

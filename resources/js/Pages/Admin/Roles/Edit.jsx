@@ -68,6 +68,7 @@ export default function Edit(props) {
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="guard_name">Guard</Label>
                             <Select
+                                value={data.guard_name}
                                 defaultValue={data.guard_name}
                                 onValueChange={(value) => setData('guard_name', value)}
                             >
@@ -77,7 +78,8 @@ export default function Edit(props) {
                                     </SelectValue>
                                 </SelectTrigger>
 
-                                <SelectContent>
+                                {/* Tambahkan className background solid di sini */}
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {['web', 'api'].map((guard, index) => (
                                         <SelectItem key={index} value={guard}>
                                             {guard.charAt(0).toUpperCase() + guard.slice(1)}

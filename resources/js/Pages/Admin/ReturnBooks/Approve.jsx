@@ -1,4 +1,5 @@
 import { Button } from '@/Components/ui/button';
+import InputError from '@/Components/InputError';
 import { Label } from '@/Components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/Components/ui/sheet';
@@ -53,7 +54,8 @@ export default function Approve({ conditions, action }) {
                                 </SelectValue>
                             </SelectTrigger>
 
-                            <SelectContent>
+                            {/* Tambahkan className agar tidak transparan */}
+                            <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                 {conditions.map((condition, index) => (
                                     <SelectItem key={index} value={condition.value}>
                                         {condition.label}
@@ -65,7 +67,7 @@ export default function Approve({ conditions, action }) {
                     </div>
 
                     <div className="grid w-full items-center gap-1.5">
-                        <Label htmlFor="condition">Kondisi Buku</Label>
+                        <Label htmlFor="notes">Catatan</Label>
                         <Textarea
                             name="notes"
                             id="notes"
