@@ -106,7 +106,7 @@ export default function Edit(props) {
                             />
                             {errors.phone && <InputError message={errors.phone} />}
                         </div>
-                        <div className="grid w-full items-center gap-1.5">
+                        {/* <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="logo">Logo</Label>
                             <input
                                 name="logo"
@@ -116,7 +116,7 @@ export default function Edit(props) {
                                 ref={fileInputLogo}
                             />
                             {errors.logo && <InputError message={errors.logo} />}
-                        </div>
+                        </div> */}
                         <div className="flex justify-end gap-x-2">
                             <Button type="button" variant="ghost" size="lg" onClick={onHandleReset}>
                                 Reset

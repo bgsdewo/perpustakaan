@@ -20,6 +20,7 @@ use App\Http\Requests\Admin\BookRequest;
 class BookController extends Controller
 {
     use HasFile;
+
     public function index(): Response
     {
         $books = Book::query()
@@ -65,6 +66,7 @@ class BookController extends Controller
             ],
         ]);
     }
+
     public function create(): Response
     {
         return inertia('Admin/Books/Create', [
@@ -88,11 +90,11 @@ class BookController extends Controller
             ],
         ]);
     }
+
     public function store(BookRequest $request): RedirectResponse
     {
         try {
             $book = Book::create([
-
                 'book_code' => $this->bookCode(
                     $request->publication_year,
                     $request->category_id,
@@ -110,13 +112,11 @@ class BookController extends Controller
                 'price' => $request->price,
                 'category_id' => $request->category_id,
                 'publisher_id' => $request->publisher_id,
-
             ]);
 
             flashMessage(MessageType::CREATED->message('Buku'));
             return to_route('admin.books.index');
         } catch (Throwable $e) {
-
             flashMessage(
                 MessageType::ERROR->message($e->getMessage()),
                 'error'
@@ -155,7 +155,7 @@ class BookController extends Controller
     {
         try {
             $book->update([
-
+                // ✅ Tambahkan kembali agar book_code ikut diperbarui saat kategori/tahun di-edit
                 'book_code' => $this->bookCode(
                     $request->publication_year,
                     $request->category_id,
@@ -173,13 +173,11 @@ class BookController extends Controller
                 'price' => $request->price,
                 'category_id' => $request->category_id,
                 'publisher_id' => $request->publisher_id,
-
             ]);
 
             flashMessage(MessageType::UPDATED->message('Buku'));
             return to_route('admin.books.index');
         } catch (Throwable $e) {
-
             flashMessage(
                 MessageType::ERROR->message($e->getMessage()),
                 'error'
@@ -200,7 +198,6 @@ class BookController extends Controller
 
             return to_route('admin.books.index');
         } catch (Throwable $e) {
-
             flashMessage(
                 MessageType::ERROR->message($e->getMessage()),
                 'error'
@@ -213,9 +210,12 @@ class BookController extends Controller
     private function bookCode(int $publication_year, int $category_id): string
     {
         $category = Category::find($category_id);
-        $book_code_prefix = 'CA' . $publication_year . '.' . str()->slug($category->name) . '.';
+        $category_slug = str()->slug($category->name);
+        $book_code_prefix = 'CA' . $publication_year . '.' . $category_slug . '.';
+
+        // Cari buku terakhir KHUSUS berdasarkan kategori yang sama untuk mereset nomor ke 0001
         $last_book = Book::query()
-            ->where('book_code', 'like', $book_code_prefix . '%')
+            ->where('category_id', $category_id)
             ->orderByRaw('CAST(SUBSTRING(book_code, -4) AS UNSIGNED) DESC')
             ->first();
 
@@ -225,7 +225,9 @@ class BookController extends Controller
             $last_order = (int) substr($last_book->book_code, -4);
             $order = $last_order + 1;
         }
+
         $ordering = str_pad($order, 4, '0', STR_PAD_LEFT);
-        return $book_code_prefix . $ordering;
+
+        return 'CA' . $publication_year . '.' . $category_slug . '.' . $ordering;
     }
 }
