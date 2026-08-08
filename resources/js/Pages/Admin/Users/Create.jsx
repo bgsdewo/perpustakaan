@@ -210,7 +210,7 @@ export default function Create(props) {
                         </div>
 
                         {/* Avatar */}
-                        <div className="grid w-full items-center gap-1.5">
+                        {/* <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="avatar">Avatar</Label>
 
                             <input
@@ -222,7 +222,7 @@ export default function Create(props) {
                             />
 
                             {errors.avatar && <InputError message={errors.avatar} />}
-                        </div>
+                        </div> */}
 
                         {/* Button */}
                         <div className="flex justify-end gap-x-2">
