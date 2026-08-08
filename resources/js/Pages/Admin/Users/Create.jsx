@@ -28,7 +28,15 @@ export default function Create(props) {
     });
 
     const onHandleChange = (e) => {
-        setData(e.target.name, e.target.value);
+        const { name, value } = e.target;
+
+        // Jika field yang diubah adalah 'phone', filter hanya ambil angka (0-9)
+        if (name === 'phone') {
+            const numericValue = value.replace(/\D/g, '');
+            setData(name, numericValue);
+        } else {
+            setData(name, value);
+        }
     };
 
     const onHandleSubmit = (e) => {
@@ -141,7 +149,7 @@ export default function Create(props) {
                             {errors.password_confirmation && <InputError message={errors.password_confirmation} />}
                         </div>
 
-                        {/* Phone */}
+                        {/* Phone (Hanya Angka) */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="phone">Nomor Handphone</Label>
 
@@ -149,6 +157,7 @@ export default function Create(props) {
                                 name="phone"
                                 id="phone"
                                 type="text"
+                                inputMode="numeric"
                                 placeholder="Masukan nomor handphone..."
                                 value={data.phone}
                                 onChange={onHandleChange}
@@ -208,21 +217,6 @@ export default function Create(props) {
 
                             {errors.address && <InputError message={errors.address} />}
                         </div>
-
-                        {/* Avatar */}
-                        {/* <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="avatar">Avatar</Label>
-
-                            <input
-                                name="avatar"
-                                id="avatar"
-                                type="file"
-                                onChange={(e) => setData('avatar', e.target.files[0])}
-                                ref={fileInputAvatar}
-                            />
-
-                            {errors.avatar && <InputError message={errors.avatar} />}
-                        </div> */}
 
                         {/* Button */}
                         <div className="flex justify-end gap-x-2">

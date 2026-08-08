@@ -19,7 +19,17 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
         address: user.address || '',
     });
 
-    const onHandleChange = (e) => setData(e.target.name, e.target.value);
+    const onHandleChange = (e) => {
+        const { name, value } = e.target;
+
+        // Jika field yang diubah adalah 'phone', filter hanya ambil angka (0-9)
+        if (name === 'phone') {
+            const numericValue = value.replace(/\D/g, '');
+            setData(name, numericValue);
+        } else {
+            setData(name, value);
+        }
+    };
 
     const onHandleSubmit = (e) => {
         e.preventDefault();
@@ -57,13 +67,14 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         {errors.email && <InputError className="mt-2" message={errors.email} />}
                     </div>
 
-                    {/* Nomor Handphone */}
+                    {/* Nomor Handphone (Hanya Angka) */}
                     <div>
                         <Label htmlFor="phone">Nomor Handphone</Label>
                         <Input
                             id="phone"
                             name="phone"
                             type="text"
+                            inputMode="numeric"
                             value={data.phone}
                             onChange={onHandleChange}
                             placeholder="Masukan nomor handphone..."
@@ -82,8 +93,8 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
                         </select>
                         {errors.gender && <InputError className="mt-2" message={errors.gender} />}
                     </div>

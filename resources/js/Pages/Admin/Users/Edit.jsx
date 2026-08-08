@@ -25,7 +25,19 @@ export default function Edit(props) {
         address: props.user.address ?? '',
         _method: props.page_settings.method,
     });
-    const onHandleChange = (e) => setData(e.target.name, e.target.value);
+
+    const onHandleChange = (e) => {
+        const { name, value } = e.target;
+
+        // Jika field yang diubah adalah 'phone', filter hanya ambil angka (0-9)
+        if (name === 'phone') {
+            const numericValue = value.replace(/\D/g, '');
+            setData(name, numericValue);
+        } else {
+            setData(name, value);
+        }
+    };
+
     const onHandleSubmit = (e) => {
         e.preventDefault();
         post(props.page_settings.action, {
@@ -41,9 +53,12 @@ export default function Edit(props) {
             },
         });
     };
+
     const onHandleReset = () => {
         reset();
-        fileInputAvatar.current.value = null;
+        if (fileInputAvatar.current) {
+            fileInputAvatar.current.value = null;
+        }
     };
 
     return (
@@ -113,12 +128,14 @@ export default function Edit(props) {
                             {errors.password_confirmation && <InputError message={errors.password_confirmation} />}
                         </div>
 
+                        {/* Phone (Hanya Angka) */}
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="phone">Nomor Handphone</Label>
                             <Input
                                 name="phone"
                                 id="phone"
                                 type="text"
+                                inputMode="numeric"
                                 placeholder="Masukan nomor handphone..."
                                 value={data.phone}
                                 onChange={onHandleChange}
