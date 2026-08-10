@@ -196,13 +196,13 @@ export default function Index(props) {
                                     <TableCell>{loan.created_at}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
-                                            {!loan.has_return_book && (
+                                            {/* {!loan.has_return_book && (
                                                 <Button variant="purple" size="sm" asChild>
                                                     <Link href={route('admin.return-books.create', [loan])}>
                                                         <IconCreditCardRefund className="size-4" />
                                                     </Link>
                                                 </Button>
-                                            )}
+                                            )} */}
                                             {/* EDIT */}
                                             <Button variant="blue" size="sm" asChild>
                                                 <Link href={route('admin.loans.edit', [loan])}>

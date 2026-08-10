@@ -173,7 +173,7 @@ export default function Create(props) {
                                             ?.label ?? 'Pilih kondisi'}
                                     </SelectValue>
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {props.conditions.map((condition, index) => (
                                         <SelectItem
                                             key={index}

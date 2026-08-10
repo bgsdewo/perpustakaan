@@ -59,7 +59,7 @@ class LoanController extends Controller
             'page_data' => [
                 'date' => [
                     'loan_date' => Carbon::now()->toDateString(),
-                    'due_date' => Carbon::now()->addDays(7)->toDateString(),
+                    'due_date' => Carbon::now()->addDays(1)->toDateString(),
                 ],
                 'books' => Book::query()
                     ->select(['id', 'title'])
@@ -106,7 +106,7 @@ class LoanController extends Controller
                 'user_id' => $user->id,
                 'book_id' => $book->id,
                 'loan_date' => Carbon::now()->toDateString(),
-                'due_date' => Carbon::now()->addDays(7)->toDateString(),
+                'due_date' => Carbon::now()->addDays(1)->toDateString(),
             ]), function ($loan) {
                 $loan->book->stock_loan();
                 flashMessage('Berhasil menambahkan peminjaman');
@@ -133,7 +133,7 @@ class LoanController extends Controller
             'page_data' => [
                 'date' => [
                     'loan_date' => Carbon::now()->toDateString(),
-                    'due_date' => Carbon::now()->addDays(7)->toDateString(),
+                    'due_date' => Carbon::now()->addDays(1)->toDateString(),
                 ],
                 'books' => Book::query()
                     ->select(['id', 'title'])

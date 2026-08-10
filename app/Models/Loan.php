@@ -50,11 +50,20 @@ class Loan extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
+                // Pencarian pada kolom tabel loans sendiri
                 $query->whereAny([
                     'loan_code',
                     'loan_date',
                     'due_date',
-                ], 'REGEXP', $search);
+                ], 'REGEXP', $search)
+                // Pencarian berdasarkan nama user (relasi)
+                ->orWhereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'REGEXP', $search);
+                })
+                // Pencarian berdasarkan judul buku (relasi)
+                ->orWhereHas('book', function ($query) use ($search) {
+                    $query->where('title', 'REGEXP', $search);
+                });
             });
         });
     }
