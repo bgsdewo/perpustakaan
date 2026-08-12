@@ -26,7 +26,6 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Index(props) {
-    console.log('Data User Login:', props.auth.user);
     const { data: users, meta } = props.users;
     const [params, setParams] = useState(props.state);
 

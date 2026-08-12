@@ -56,11 +56,12 @@ Route::controller(PaymentController::class)->group(function () {
     Route::get('payments/success', 'success')->name('payments.success');
 });
 
-Route::middleware(['auth', 'dynamic.role_permission'])->group(function () {
+Route::middleware(['auth', ])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// 'dynamic.role_permission'
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
