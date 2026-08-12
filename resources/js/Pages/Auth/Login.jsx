@@ -98,7 +98,7 @@ export default function Login({ status, canResetPassword }) {
                                     {errors.password && <InputError message={errors.password} />}
                                 </div>
 
-                                <div className="flex items-center space-x-2">
+                                {/* <div className="flex items-center space-x-2">
                                     <Checkbox
                                         id="remember"
                                         name="remember"
@@ -112,7 +112,7 @@ export default function Login({ status, canResetPassword }) {
                                         Ingat Saya
                                     </Label>
                                     {errors.remember && <InputError message={errors.remember} />}
-                                </div>
+                                </div> */}
 
                                 <Button
                                     type="submit"

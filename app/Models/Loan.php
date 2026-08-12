@@ -76,14 +76,27 @@ class Loan extends Model
 
     public static function checkLoanBook(int $user_id, int $book_id): bool
     {
-        return self::query()
+        // 1. Cek apakah user sedang meminjam buku tersebut dan BELUM dikembalikan sama sekali
+        $hasActiveLoan = self::query()
             ->where('user_id', $user_id)
             ->where('book_id', $book_id)
-            ->whereDoesntHave('returnBook', function ($query) use ($book_id, $user_id) {
-                $query->where('book_id', $book_id)
-                    ->where('user_id', $user_id);
+            ->whereDoesntHave('returnBook')
+            ->exists();
+
+        if ($hasActiveLoan) {
+            return true;
+        }
+
+        // 2. Cek apakah buku sudah dikembalikan, TAPI BELUM dicek/divalidasi oleh admin (returnBookCheck kosong)
+        $hasPendingCheck = self::query()
+            ->where('user_id', $user_id)
+            ->where('book_id', $book_id)
+            ->whereHas('returnBook', function ($query) {
+                $query->whereDoesntHave('returnBookCheck');
             })
             ->exists();
+
+        return $hasPendingCheck;
     }
 
     public static function totalLoanBooks(): array

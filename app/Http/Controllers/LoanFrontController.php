@@ -75,8 +75,25 @@ class LoanFrontController extends Controller
     }
     public function store(Book $book): RedirectResponse
     {
-        if (Loan::checkLoanBook(user_id: auth()->user()->id, book_id: $book->id)) {
-            flashMessage(message: 'Anda sudah meminjam buku ini, harap kembalikan bukunya terlebih dahulu', type: 'error');
+        $userId = auth()->user()->id;
+
+        // Cek menggunakan method checkLoanBook yang sudah diperbarui
+        if (Loan::checkLoanBook(user_id: $userId, book_id: $book->id)) {
+
+            // Cek spesifik apakah statusnya sedang menunggu pengecekan admin atau masih aktif dipinjam
+            $isPendingCheck = Loan::where('user_id', $userId)
+                ->where('book_id', $book->id)
+                ->whereHas('returnBook', function ($query) {
+                    $query->whereDoesntHave('returnBookCheck');
+                })
+                ->exists();
+
+            if ($isPendingCheck) {
+                flashMessage(message: 'Tunggu pengecekan oleh admin, baru bisa meminjam buku yang sama', type: 'error');
+            } else {
+                flashMessage(message: 'Anda sudah meminjam buku ini, harap kembalikan bukunya terlebih dahulu', type: 'error');
+            }
+
             return to_route(route: 'front.books.show', parameters: $book->slug);
         }
 
@@ -86,21 +103,13 @@ class LoanFrontController extends Controller
         }
 
         $loan = tap(value: Loan::create([
-
             'loan_code' => str()->lower(str()->random(10)),
-
-            'user_id' => auth()->user()->id,
-
+            'user_id' => $userId,
             'book_id' => $book->id,
-
             'loan_date' => Carbon::now()->toDateString(),
-
             'due_date' => Carbon::now()->addDays(7)->toDateString(),
-
         ]), callback: function ($loan) {
-
             $loan->book->stock_loan();
-
             flashMessage(message: 'Berhasil melakukan peminjaman buku');
         });
 
