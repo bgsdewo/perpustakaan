@@ -175,7 +175,7 @@ export default function Create(props) {
                                     <SelectValue placeholder="Pilih jenis kelamin" />
                                 </SelectTrigger>
 
-                                <SelectContent>
+                                <SelectContent className="border border-zinc-200 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
                                     {props.genders.map((gender, i) => (
                                         <SelectItem key={i} value={String(gender.value)}>
                                             {gender.label}

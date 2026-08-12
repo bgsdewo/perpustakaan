@@ -14,11 +14,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Response;
 use Throwable;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
 class UserController extends Controller
 {
     use HasFile;
-
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:Show User', only: ['index']),
+            new Middleware('permission:Create User', only: ['create', 'store']),
+            new Middleware('permission:Edit User', only: ['edit', 'update']),
+            new Middleware('permission:Delete User', only: ['destroy']),
+        ];
+    }
     public function index(): Response
     {
         $users = User::query()

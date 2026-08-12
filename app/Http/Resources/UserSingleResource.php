@@ -28,6 +28,9 @@ class UserSingleResource extends JsonResource
             'gender' => $this->gender,
             'date_of_birth' => $this->date_of_birth ? Carbon::parse($this->date_of_birth)->format('Y-m-d') : null,
             'address' => $this->address,
+
+            'roles' => $this->getRoleNames(),
+        'permissions' => $this->getAllPermissions()->pluck('name'),
         ];
     }
 }

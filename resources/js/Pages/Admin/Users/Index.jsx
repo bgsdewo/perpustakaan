@@ -26,8 +26,15 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Index(props) {
+    console.log('Data User Login:', props.auth.user);
     const { data: users, meta } = props.users;
     const [params, setParams] = useState(props.state);
+
+    const hasPermission = (permissionName) => {
+        const permissions = props.auth?.user?.permissions;
+        if (!permissions) return false;
+        return permissions.includes(permissionName);
+    };
     const onSortable = (field) => {
         setParams({
             ...params,
@@ -50,12 +57,14 @@ export default function Index(props) {
                     subtitle={props.page_settings.subtitle}
                     icon={IconUsersGroup}
                 />
-                <Button variant="orange" size="lg">
-                    <Link href={route('admin.users.create')} className="flex items-center gap-2">
-                        <IconPlus className="size-5" />
-                        Tambah
-                    </Link>
-                </Button>
+                {hasPermission('Create User') && (
+                    <Button variant="orange" size="lg" asChild>
+                        <Link href={route('admin.users.create')} className="flex items-center gap-2">
+                            <IconPlus className="size-5" />
+                            Tambah
+                        </Link>
+                    </Button>
+                )}
             </div>
             <Card>
                 <CardHeader>
@@ -224,50 +233,60 @@ export default function Index(props) {
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
                                             {/* EDIT */}
-                                            <Button variant="blue" size="sm" asChild>
-                                                <Link href={route('admin.users.edit', [user])}>
-                                                    <IconPencil className="size-4" />
-                                                </Link>
-                                            </Button>
+                                            {hasPermission('Edit User') && (
+                                                <Button variant="blue" size="sm" asChild>
+                                                    <Link href={route('admin.users.edit', [user])}>
+                                                        <IconPencil className="size-4" />
+                                                    </Link>
+                                                </Button>
+                                            )}
 
                                             {/* DELETE */}
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button variant="red" size="sm">
-                                                        <IconTrash className="size-4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
+                                            {hasPermission('Delete User') && (
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="red" size="sm">
+                                                            <IconTrash className="size-4" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
 
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>Apakah anda benar yakin?</AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            Data akan dihapus permanen dari server.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>
+                                                                Apakah anda benar yakin?
+                                                            </AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                Data akan dihapus permanen dari server.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
 
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction
-                                                            onClick={() =>
-                                                                router.delete(route('admin.users.destroy', [user]), {
-                                                                    preserveState: true,
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                onClick={() =>
+                                                                    router.delete(
+                                                                        route('admin.users.destroy', [user]),
+                                                                        {
+                                                                            preserveState: true,
 
-                                                                    preserveScroll: true,
+                                                                            preserveScroll: true,
 
-                                                                    onSuccess: (success) => {
-                                                                        const flash = flashMessage(success);
+                                                                            onSuccess: (success) => {
+                                                                                const flash = flashMessage(success);
 
-                                                                        if (flash) toast[flash.type](flash.message);
-                                                                    },
-                                                                })
-                                                            }
-                                                        >
-                                                            Continue
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
+                                                                                if (flash)
+                                                                                    toast[flash.type](flash.message);
+                                                                            },
+                                                                        },
+                                                                    )
+                                                                }
+                                                            >
+                                                                Continue
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            )}
                                         </div>
                                     </TableCell>
                                 </TableRow>
