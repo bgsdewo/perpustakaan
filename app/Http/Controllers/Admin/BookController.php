@@ -128,6 +128,7 @@ class BookController extends Controller
 
     public function edit(Book $book): Response
     {
+        $book->load('stock');
         return inertia('Admin/Books/Edit', [
             'page_settings' => [
                 'title' => 'Edit Buku',
@@ -155,11 +156,7 @@ class BookController extends Controller
     {
         try {
             $book->update([
-                // ✅ Tambahkan kembali agar book_code ikut diperbarui saat kategori/tahun di-edit
-                'book_code' => $this->bookCode(
-                    $request->publication_year,
-                    $request->category_id,
-                ),
+                // ❌ Hapus baris 'book_code' di sini agar kode buku tidak berubah saat diedit
                 'title' => $title = $request->title,
                 'slug' => $title !== $book->title ? str()->lower(str()->slug($title) . str()->random(4)) : $book->slug,
                 'author' => $request->author,
@@ -173,6 +170,20 @@ class BookController extends Controller
                 'price' => $request->price,
                 'category_id' => $request->category_id,
                 'publisher_id' => $request->publisher_id,
+            ]);
+
+            // ✅ Hitung selisih penambahan stok agar kolom 'tersedia' (available) ikut menyesuaikan secara akurat
+            $oldTotal = $book->stock->total ?? 0;
+            $newTotal = (int) $request->total;
+            $diff = $newTotal - $oldTotal;
+
+            $currentAvailable = $book->stock->available ?? 0;
+            $newAvailable = max(0, $currentAvailable + $diff); // Mencegah nilai minus
+
+            // ✅ Update tabel relasi stock untuk total dan available sekaligus
+            $book->stock()->update([
+                'total' => $newTotal,
+                'available' => $newAvailable,
             ]);
 
             flashMessage(MessageType::UPDATED->message('Buku'));

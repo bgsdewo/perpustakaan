@@ -135,6 +135,7 @@ export default function Edit(props) {
                                 type="number"
                                 value={data.damaged}
                                 onChange={onHandleChange}
+                                disabled
                             />
                             {errors.damaged && <InputError message={errors.damaged} />}
                         </div>

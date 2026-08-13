@@ -28,7 +28,7 @@ export default function Index(props) {
     UseFilter({
         route: route('admin.return-books.index'),
         values: params,
-        only: ['return-books'],
+        only: ['return_books'],
     });
     return (
         <div className="flex w-full flex-col pb-32">

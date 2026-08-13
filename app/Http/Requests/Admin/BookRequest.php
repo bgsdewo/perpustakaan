@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\BookLanguage;
+use Illuminate\Validation\Rule;
 class BookRequest extends FormRequest
 {
     /**
@@ -44,6 +45,7 @@ class BookRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                Rule::unique('books', 'isbn')->ignore($this->route('book')),
             ],
             'language' => [
                 'required',
@@ -56,7 +58,14 @@ class BookRequest extends FormRequest
             'required',
             'integer',
             'numeric',
+            'min:1', // Halaman buku minimal 1
         ],
+        'total' => [
+                'required',
+                'integer',
+                'numeric',
+                'min:3',
+            ],
             'cover' => [
             'nullable',
             'mimes:png,jpg,jpeg,webp',
@@ -87,7 +96,9 @@ class BookRequest extends FormRequest
         'language' => 'Bahasa',
         'synopsis' => 'Sinopsis',
         'number_of_pages' => 'Jumlah Halaman',
+        'total' => 'Stok',
         'cover' => 'Cover',
+        'price' => 'Harga',
         'category_id' => 'Kategori',
         'publisher_id' => 'Penerbit',
     ];

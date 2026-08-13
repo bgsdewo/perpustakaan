@@ -27,6 +27,7 @@ export default function Edit(props) {
         price: props.book.price ?? '',
         category_id: String(props.book.category_id ?? ''),
         publisher_id: String(props.book.publisher_id ?? ''),
+        total: props.book.stock?.total ?? 0,
         _method: props.page_settings.method,
     });
 
@@ -202,6 +203,13 @@ export default function Edit(props) {
                                 </SelectContent>
                             </Select>
                             {errors.publisher_id && <InputError message={errors.publisher_id} />}
+                        </div>
+
+                        {/* Stok */}
+                        <div>
+                            <Label>Stok</Label>
+                            <Input type="number" name="total" min="0" value={data.total} onChange={onHandleChange} />
+                            {errors.total && <InputError message={errors.total} />}
                         </div>
 
                         {/* Button */}

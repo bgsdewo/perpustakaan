@@ -15,32 +15,36 @@ use Throwable;
 class BookStockReportController extends Controller
 {
     public function index(): Response
-    { {
-            $stocks = stock::query()
-                ->select(['stocks.id', 'book_id', 'total', 'available', 'loan', 'lost', 'damaged', 'stocks.created_at'])
-                ->filter(request()->only(['search']))
-                ->sorting(request()->only(['field', 'direction']))
-                ->paginate(request()->load ?? 10)
-                ->withQueryString();
+    {
+        $stocks = stock::query()
+            ->select(['stocks.id', 'book_id', 'total', 'available', 'loan', 'lost', 'damaged', 'stocks.created_at'])
+            // ✅ Tambahkan join ke tabel books agar bisa memfilter berdasarkan judul buku
+            ->join('books', 'books.id', '=', 'stocks.book_id')
+            ->with('book') // Pastikan relasi dimuat untuk resource
+            ->when(request('search'), function ($query, $search) {
+                $query->where('books.title', 'like', '%' . $search . '%')
+                      ->orWhere('books.book_code', 'like', '%' . $search . '%');
+            })
+            ->sorting(request()->only(['field', 'direction']))
+            ->paginate(request()->load ?? 10)
+            ->withQueryString();
 
-            return inertia('Admin/BookStockReports/Index', props: [
-                'page_settings' => [
-                    'title' => 'Laporan Stok Buku',
-                    'subtitle' => 'Menampilkan laporan stok buku yang tersedia pada platform ini',
+        return inertia('Admin/BookStockReports/Index', props: [
+            'page_settings' => [
+                'title' => 'Laporan Stok Buku',
+                'subtitle' => 'Menampilkan laporan stok buku yang tersedia pada platform ini',
+            ],
+            'stocks' => StockResource::collection($stocks)->additional([
+                'meta' => [
+                    'has_pages' => $stocks->hasPages(),
                 ],
-                'stocks' => StockResource::collection($stocks)->additional([
-                    'meta' => [
-                        'has_pages' => $stocks->hasPages(),
-                    ],
-                ]),
-                'state' => [
-                    'page' => request()->page ?? 1,
-                    'search' => request()->search ?? "",
-                    'load' => 10,
-                ]
-
-            ]);
-        }
+            ]),
+            'state' => [
+                'page' => request()->page ?? 1,
+                'search' => request()->search ?? "",
+                'load' => 10,
+            ]
+        ]);
     }
     public function edit(Stock $stock): Response
     {

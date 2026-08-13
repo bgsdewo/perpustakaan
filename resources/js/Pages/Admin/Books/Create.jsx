@@ -208,7 +208,8 @@ export default function Create(props) {
                         {/* Stok */}
                         <div>
                             <Label>Stok</Label>
-                            <Input type="number" name="total" value={data.total} onChange={onHandleChange} />
+                            <Input type="number" name="total" min="1" value={data.total} onChange={onHandleChange} />
+                            {errors.total && <InputError message={errors.total} />}
                         </div>
 
                         {/* Button */}
