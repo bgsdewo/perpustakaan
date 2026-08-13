@@ -21,6 +21,7 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->route('user')?->id ?? $this->route('user');
         return [
             'name' => [
         'required',
@@ -34,6 +35,13 @@ class UserRequest extends FormRequest
         'max:255',
         Rule::unique('users')->ignore($this->user),
     ],
+    'username' => [
+            'required',
+            'string',
+            'max:255',
+            // ✅ Aturan agar unik tapi mengabaikan user yang sedang diedit
+            Rule::unique('users', 'username')->ignore($userId),
+        ],
     'password' => Rule::when(
     $this->routeIs('admin.users.store'),
     [

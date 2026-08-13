@@ -13,6 +13,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name || '',
         email: user.email || '',
+        username: user.username || '',
         phone: user.phone || '',
         gender: user.gender || '',
         date_of_birth: user.date_of_birth || '',
@@ -66,7 +67,19 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                         />
                         {errors.email && <InputError className="mt-2" message={errors.email} />}
                     </div>
-
+                    {/* username */}
+                    {/* Username */}
+                    <div>
+                        <Label htmlFor="username">Username</Label>
+                        <Input
+                            id="username"
+                            name="username"
+                            value={data.username}
+                            onChange={onHandleChange}
+                            placeholder="Masukkan username..."
+                        />
+                        {errors.username && <InputError className="mt-2" message={errors.username} />}
+                    </div>
                     {/* Nomor Handphone (Hanya Angka) */}
                     <div>
                         <Label htmlFor="phone">Nomor Handphone</Label>

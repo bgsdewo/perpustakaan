@@ -16,6 +16,7 @@ export default function Edit(props) {
     const { data, setData, reset, post, processing, errors } = useForm({
         name: props.user.name ?? '',
         email: props.user.email ?? '',
+        username: props.user.username || '',
         password: '',
         password_confirmation: '',
         phone: props.user.phone ?? '',
@@ -102,6 +103,19 @@ export default function Edit(props) {
                                 onChange={onHandleChange}
                             />
                             {errors.email && <InputError message={errors.email} />}
+                        </div>
+
+                        {/* Username */}
+                        <div>
+                            <Label htmlFor="username">Username</Label>
+                            <Input
+                                id="username"
+                                name="username"
+                                value={data.username}
+                                onChange={onHandleChange}
+                                placeholder="Masukkan username..."
+                            />
+                            {errors.username && <InputError className="mt-2" message={errors.username} />}
                         </div>
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="password">Password</Label>

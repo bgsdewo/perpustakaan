@@ -155,8 +155,33 @@ class BookController extends Controller
     public function update(Book $book, BookRequest $request): RedirectResponse
     {
         try {
+            $newBookCode = $book->book_code;
+
+            // ✅ Jika kategori diubah, buatkan nomor urut baru yang sesuai khusus untuk kategori tersebut
+            if ($book->category_id != $request->category_id) {
+                $category = Category::find($request->category_id);
+                $category_slug = str()->slug($category->name);
+                $publication_year = $request->publication_year;
+
+                // Cari nomor urut terakhir pada kategori baru ini
+                $last_book = Book::query()
+                    ->where('category_id', $request->category_id)
+                    ->where('id', '!=', $book->id) // Abaikan buku ini sendiri agar tidak terhitung double
+                    ->orderByRaw('CAST(SUBSTRING(book_code, -4) AS UNSIGNED) DESC')
+                    ->first();
+
+                $order = 1;
+                if ($last_book) {
+                    $last_order = (int) substr($last_book->book_code, -4);
+                    $order = $last_order + 1;
+                }
+
+                $ordering = str_pad($order, 4, '0', STR_PAD_LEFT);
+                $newBookCode = 'CA' . $publication_year . '.' . $category_slug . '.' . $ordering;
+            }
+
             $book->update([
-                // ❌ Hapus baris 'book_code' di sini agar kode buku tidak berubah saat diedit
+                'book_code' => $newBookCode, // ✅ Terapkan kode buku baru yang sudah disesuaikan
                 'title' => $title = $request->title,
                 'slug' => $title !== $book->title ? str()->lower(str()->slug($title) . str()->random(4)) : $book->slug,
                 'author' => $request->author,
@@ -172,15 +197,14 @@ class BookController extends Controller
                 'publisher_id' => $request->publisher_id,
             ]);
 
-            // ✅ Hitung selisih penambahan stok agar kolom 'tersedia' (available) ikut menyesuaikan secara akurat
+            // Hitung selisih stok seperti biasa
             $oldTotal = $book->stock->total ?? 0;
             $newTotal = (int) $request->total;
             $diff = $newTotal - $oldTotal;
 
             $currentAvailable = $book->stock->available ?? 0;
-            $newAvailable = max(0, $currentAvailable + $diff); // Mencegah nilai minus
+            $newAvailable = max(0, $currentAvailable + $diff);
 
-            // ✅ Update tabel relasi stock untuk total dan available sekaligus
             $book->stock()->update([
                 'total' => $newTotal,
                 'available' => $newAvailable,
