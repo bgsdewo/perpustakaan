@@ -23,6 +23,11 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     const onHandleChange = (e) => {
         const { name, value } = e.target;
 
+        if (name === 'name') {
+            const lettersOnly = value.replace(/[0-9]/g, '');
+            setData(name, lettersOnly);
+        }
+
         // Jika field yang diubah adalah 'phone', filter hanya ambil angka (0-9)
         if (name === 'phone') {
             const numericValue = value.replace(/\D/g, '');

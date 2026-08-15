@@ -17,6 +17,7 @@ export default function Create(props) {
     const { data, setData, reset, post, processing, errors } = useForm({
         name: '',
         email: '',
+        username: '',
         password: '',
         password_confirmation: '',
         phone: '',
@@ -29,6 +30,11 @@ export default function Create(props) {
 
     const onHandleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === 'name') {
+            const lettersOnly = value.replace(/[0-9]/g, '');
+            setData(name, lettersOnly);
+        }
 
         // Jika field yang diubah adalah 'phone', filter hanya ambil angka (0-9)
         if (name === 'phone') {
@@ -115,6 +121,20 @@ export default function Create(props) {
                             />
 
                             {errors.email && <InputError message={errors.email} />}
+                        </div>
+
+                        {/* Username */}
+                        <div className="grid w-full items-center gap-1.5">
+                            <Label htmlFor="username">Username</Label>
+                            <Input
+                                name="username"
+                                id="username"
+                                type="text"
+                                placeholder="Masukan username..."
+                                value={data.username}
+                                onChange={onHandleChange}
+                            />
+                            {errors.username && <InputError message={errors.username} />}
                         </div>
 
                         {/* Password */}

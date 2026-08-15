@@ -13,7 +13,17 @@ export default function Register() {
         password_confirmation: '',
     });
 
-    const onHandleChange = (e) => setData(e.target.name, e.target.value);
+    const onHandleChange = (e) => {
+        const { name, value } = e.target;
+
+        // ✅ Jika field yang diubah adalah 'name', hilangkan semua angka secara otomatis
+        if (name === 'name') {
+            const lettersOnly = value.replace(/[0-9]/g, '');
+            setData(name, lettersOnly);
+        } else {
+            setData(name, value);
+        }
+    };
 
     const submit = (e) => {
         e.preventDefault();

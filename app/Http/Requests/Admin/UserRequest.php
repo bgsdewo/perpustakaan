@@ -28,6 +28,7 @@ class UserRequest extends FormRequest
         'min:3',
         'max:255',
         'string',
+        'regex:/^[a-zA-Z\s]+$/',
     ],
     'email' => [
         'required',
@@ -64,6 +65,7 @@ Rule::when(
     'nullable',
     'min:10',
     'max:15',
+    Rule::unique('users', 'phone')->ignore($userId),
 ],
 
 'avatar' => [
@@ -89,6 +91,7 @@ Rule::when(
     return [
         'name' => 'Nama',
         'email' => 'Email',
+        'username' => 'Username',
         'password' => 'Password',
         'phone' => 'Nomor Handphone',
         'avatar' => 'Avatar',
