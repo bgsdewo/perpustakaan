@@ -88,7 +88,14 @@ export default function Edit(props) {
                     <form className="space-y-6" onSubmit={onHandleSubmit}>
                         <div className="grid w-full items-center gap-1.5">
                             <Label htmlFor="total">Total</Label>
-                            <Input name="total" id="total" type="number" value={data.total} onChange={onHandleChange} />
+                            <Input
+                                name="total"
+                                id="total"
+                                type="number"
+                                value={data.total}
+                                onChange={onHandleChange}
+                                disabled
+                            />
                             {errors.total && <InputError message={errors.total} />}
                         </div>
                         <div className="grid w-full items-center gap-1.5">
